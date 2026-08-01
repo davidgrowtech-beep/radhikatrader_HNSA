@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Telugu Trader Radhika™</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { min-height: 100%; width: 100%; overflow-x: hidden; overflow-y: auto; font-family: 'DM Sans', sans-serif; background: #03060f; }
+
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: #03060f;
+    }
+    .bg::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 90% 10%, rgba(0,210,100,0.07) 0%, transparent 50%),
+        radial-gradient(ellipse at 10% 80%, rgba(0,180,80,0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255,200,50,0.03) 0%, transparent 60%);
+    }
+    /* Fine grid */
+    .bg::after {
+      content: ''; position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,210,100,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,210,100,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    /* Scan line */
+    .scanline {
+      position: fixed; left: 0; width: 100%; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,210,100,0.12), transparent);
+      z-index: 2; pointer-events: none;
+      animation: scan 8s linear infinite;
+    }
+    @keyframes scan { 0%{top:-2%} 100%{top:102%} }
+
+    .wrapper {
+      position: relative; z-index: 10;
+      min-height: 100vh; width: 100%;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── TOP TICKER ── */
+    .ticker {
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0,210,100,0.2);
+      overflow: hidden; white-space: nowrap; flex-shrink: 0;
+    }
+    .ticker-inner { display: inline-block; animation: tick 22s linear infinite; }
+    @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── HERO — NEW LAYOUT: centered name, chart below ── */
+    .hero {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 28px 20px 20px;
+      position: relative; overflow: hidden;
+      text-align: center;
+      min-height: 0;
+    }
+
+    /* Vertical lines deco */
+    .v-lines {
+      position: absolute; inset: 0; pointer-events: none;
+      display: flex; justify-content: space-between;
+    }
+    .v-line {
+      width: 1px;
+      background: linear-gradient(180deg, transparent, rgba(0,210,100,0.06), transparent);
+    }
+
+    /* ₹ symbol big ghost */
+    .rupee-ghost {
+      position: absolute;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: 65vw;
+      color: rgba(0,210,100,0.025);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -52%);
+      pointer-events: none; user-select: none; z-index: 0; line-height: 1;
+    }
+
+    /* Status pill */
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(0,210,100,0.06);
+      border: 1px solid rgba(0,210,100,0.18);
+      border-radius: 99px; padding: 5px 14px;
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+    }
+    .status-text { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(0,210,100,0.65); }
+
+    /* Name */
+    .name-radhika {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: clamp(3rem, 15vw, 6.5rem);
+      color: #ff0000;
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      position: relative; z-index: 1;
+    }
+    .name-telugu-trader {
+      font-family: 'DM Mono', monospace;
+      font-size: clamp(0.65rem, 2.8vw, 1rem);
+      color: rgba(0,210,100,0.55);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      margin-top: 6px;
+      position: relative; z-index: 1;
+    }
+    .tm { font-size: 0.55em; vertical-align: super; color: rgba(0,210,100,0.4); }
+
+    /* Green separator */
+    .sep {
+      width: 40px; height: 2px;
+      background: linear-gradient(90deg, rgba(0,210,100,0.2), #00d264, rgba(0,210,100,0.2));
+      border-radius: 99px; margin: 18px auto;
+      position: relative; z-index: 1;
+    }
+
+    /* Live chart SVG */
+    .chart-wrap {
+      width: 100%; max-width: 320px;
+      position: relative; z-index: 1; margin: 0 auto;
+    }
+    .chart-path {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: draw 2s ease forwards 0.3s;
+    }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    /* Subtext */
+    .subtext {
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.3);
+      font-weight: 300; line-height: 1.65;
+      max-width: 270px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+
+    /* Market tags */
+    .mkt-row {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      justify-content: center; margin-top: 14px;
+      position: relative; z-index: 1;
+    }
+    .mkt-tag {
+      background: rgba(0,210,100,0.06);
+      border: 1px solid rgba(0,210,100,0.18);
+      color: rgba(0,230,110,0.75);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; padding: 4px 10px;
+      border-radius: 6px; white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+
+    /* Price ticker mini */
+    .price-row {
+      display: flex; gap: 8px; justify-content: center;
+      flex-wrap: wrap; margin-top: 14px;
+      position: relative; z-index: 1;
+    }
+    .price-chip {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(0,210,100,0.12);
+      border-radius: 8px; padding: 5px 10px;
+    }
+    .price-name { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); }
+    .price-val { font-family: 'DM Mono', monospace; font-size: 10px; color: #00e676; }
+    .price-up { color: #00e676; font-size: 9px; }
+    .price-dn { color: #ff4444; font-size: 9px; }
+
+    /* BOTTOM */
+    .bottom { padding: 14px 18px 22px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+
+    .cta {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; min-height: 50px;
+      background: linear-gradient(135deg, #008a40, #00c853);
+      color: #001a08;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700; font-size: clamp(0.85rem, 4vw, 1rem);
+      letter-spacing: 0.06em;
+      border-radius: 12px; text-decoration: none;
+      position: relative; overflow: hidden;
+      box-shadow: 0 4px 28px rgba(0,200,83,0.3);
+      transition: transform .18s, box-shadow .18s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta svg { flex-shrink: 0; width: 18px; height: 18px; }
+    .cta::after {
+      content: '';
+      position: absolute; top:0; left:-100%; width:50%; height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: skewX(-18deg);
+      animation: shine 3s ease-in-out infinite;
+    }
+    @keyframes shine { 0%,65%{left:-100%} 100%{left:160%} }
+    .cta:active { transform: scale(0.97); }
+
+    .meta { display: flex; align-items: center; justify-content: space-between; }
+
+    @keyframes ping { 75%,100%{transform:scale(2.2);opacity:0} }
+    .ping { animation: ping 1.3s cubic-bezier(0,0,.2,1) infinite; }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px 16px 4px;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-logo {
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+      display: block;
+      margin: 0 auto;
+    }
+
+    .verify {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      color: #00e676;
+    }
+
+    .verify svg { width: 13px; height: 13px; flex-shrink: 0; }
+
+    .container h2 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.55);
+      max-width: 280px;
+      line-height: 1.4;
+    }
+  </style>
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1617457933341559');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1617457933341559&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+</head>
+<body>
+
+  <div class="bg"></div>
+  <div class="scanline"></div>
+
+  <div class="wrapper">
+
+    <!-- TICKER -->
+    <div class="ticker py-1.5">
+      <div class="ticker-inner" style="font-size:11px;font-weight:600;letter-spacing:0.15em;color:rgba(0,210,100,0.7);">
+        <span style="padding:0 16px;">📈 తెలుగు ట్రేడర్ రాధిక™ •</span>
+        <span style="padding:0 16px;">NIFTY CALLS •</span>
+        <span style="padding:0 16px;">OPTIONS TIPS •</span>
+        <span style="padding:0 16px;">BANKNIFTY •</span>
+        <span style="padding:0 16px;">FREE CHANNEL •</span>
+        <span style="padding:0 16px;">TELUGU COMMUNITY •</span>
+        <span style="padding:0 16px;">DAILY ALERTS •</span>
+        <span style="padding:0 16px;">📈 TELUGU TRADER RADHIKA™ •</span>
+        <span style="padding:0 16px;">NIFTY CALLS •</span>
+        <span style="padding:0 16px;">OPTIONS TIPS •</span>
+        <span style="padding:0 16px;">BANKNIFTY •</span>
+        <span style="padding:0 16px;">FREE CHANNEL •</span>
+        <span style="padding:0 16px;">TELUGU COMMUNITY •</span>
+        <span style="padding:0 16px;">DAILY ALERTS •</span>
+      </div>
+    </div>
+
+    <div class="container">
+        <img src="rt.jpg" alt="Brand Logo" class="brand-logo" width="120" height="120" onerror="this.style.display='none'">
+        <div class="verify">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.6 14.6-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4-7 7z"/></svg>
+          Verified Learning Community
+        </div>
+        <h2>*Learn in Structured Way, Not at Guess work</h2>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero">
+
+      <!-- Deco -->
+      <div class="v-lines">
+        <div class="v-line"></div><div class="v-line"></div>
+        <div class="v-line"></div><div class="v-line"></div>
+        <div class="v-line"></div>
+      </div>
+      <div class="rupee-ghost">₹</div>
+
+      <!-- Status -->
+      <div class="status-pill">
+        <span style="width:6px;height:6px;border-radius:50%;background:#00d264;display:inline-block;flex-shrink:0;box-shadow:0 0 8px rgba(0,210,100,0.8);"></span>
+        <span class="status-text">Telegram Channel · Free</span>
+      </div>
+
+      <!-- Name -->
+      <div style="position:relative;z-index:1;">
+        <div class="name-radhika">Radhika</div>
+        <div class="name-telugu-trader">Telugu Trader<span class="tm">™</span></div>
+      </div>
+
+      <!-- Sep -->
+      <div class="sep"></div>
+
+      <!-- Live chart -->
+      <div class="chart-wrap">
+        <svg viewBox="0 0 320 60" preserveAspectRatio="none" style="width:100%;height:52px;">
+          <defs>
+            <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#00c853;stop-opacity:0.3"/>
+              <stop offset="100%" style="stop-color:#00e676;stop-opacity:1"/>
+            </linearGradient>
+            <linearGradient id="fill" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" style="stop-color:#00c853;stop-opacity:0.12"/>
+              <stop offset="100%" style="stop-color:#00c853;stop-opacity:0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,48 L20,42 L45,38 L70,32 L95,28 L120,22 L145,18 L170,14 L200,10 L230,8 L260,5 L290,3 L320,1 L320,60 L0,60 Z"
+                fill="url(#fill)"/>
+          <polyline class="chart-path"
+            points="0,48 20,42 45,38 70,32 95,28 120,22 145,18 170,14 200,10 230,8 260,5 290,3 320,1"
+            fill="none" stroke="url(#cg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <!-- Subtext -->
+      <p class="subtext" style="margin-top:12px;">
+        Expert stock &amp; తెలుగు సమాజం కోసం ఆప్షన్స్ కాల్స్ — నిఫ్టీ (NIFTY), బ్యాంక్ నిఫ్టీ (BANKNIFTY) &amp; intraday tips, daily on Telegram.
+      </p>
+
+      <!-- Price chips -->
+      <div class="price-row">
+        <div class="price-chip">
+          <span class="price-name">NIFTY</span>
+          <span class="price-val">23,842</span>
+          <span class="price-up">▲</span>
+        </div>
+        <div class="price-chip">
+          <span class="price-name">BANKNIFTY</span>
+          <span class="price-val">51,204</span>
+          <span class="price-up">▲</span>
+        </div>
+        <div class="price-chip">
+          <span class="price-name">SENSEX</span>
+          <span class="price-val">78,502</span>
+          <span class="price-dn">▼</span>
+        </div>
+      </div>
+
+      <!-- Market tags -->
+      <div class="mkt-row">
+        <span class="mkt-tag">📈 Intraday</span>
+        <span class="mkt-tag">🎯 Options</span>
+        <span class="mkt-tag">💹 Swing</span>
+        <span class="mkt-tag">⚡ Alerts</span>
+        <span class="mkt-tag">🇮🇳 Telugu</span>
+      </div>
+  <!-- BOTTOM -->
+    <div class="bottom">
+      <a href="https://t.me/+LeW2WrV0RoA3ZmE1" target="_blank" class="cta" id="cta-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+        </svg>
+        <span id="cta-label">JOIN FREE LEARNING COMMUNITY</span>
+      </a>
+
+      <p id="countdown-text" style="text-align:center;font-family:'DM Mono',monospace;font-size:10.5px;color:rgba(0,230,110,0.55);letter-spacing:0.04em;">
+        Auto-redirecting to Telegram in <span id="countdown-num">20</span>s
+      </p>
+
+      <div class="meta">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="position:relative;display:inline-flex;width:8px;height:8px;">
+            <span class="ping" style="position:absolute;inset:0;border-radius:50%;background:#00d264;opacity:0.75;display:inline-flex;width:100%;height:100%;"></span>
+            <span style="position:relative;width:8px;height:8px;border-radius:50%;background:#00d264;display:inline-flex;flex-shrink:0;"></span>
+          </span>
+          <span style="font-size:10px;color:rgba(255,255,255,0.25);">మార్కెట్ ప్రత్యక్షం · క్రియాశీల సభ్యులు</span>
+        </div>
+        <p style="font-size:10px;color:rgba(255,255,255,0.15);">స్వేచ్ఛగా · బాధ్యతాయుతంగా వ్యాపారం చేయండి</p>
+      </div>
+    </div>
+    </div>
+            <div class="disclaimer"><div style="text-align:center; margin:14px 0 10px 0; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08);">
+        <p style="font-weight:bold; margin-bottom:6px; font-size:11px; color:#94a3b8;">Advertised by : SRS Marketing Agency</p>
+        <a href="https://t.me/srsagency" target="_blank" style="
+      display:inline-block;
+      background-color:#229ED9;
+      color:#ff0000;
+      padding:6px 14px;
+      border-radius:6px;
+      text-decoration:none;
+      font-weight:600;
+      font-size:12px;
+      font-family:sans-serif;">
+    📩 * Visit @ SRS Marketing
+  </a>
+  </div>
+
+  <script>
+  (function () {
+    var TELEGRAM_URL = "https://t.me/+LeW2WrV0RoA3ZmE1";
+    var COUNTDOWN_SECONDS = 20;
+
+    var ctaBtn = document.getElementById('cta-btn');
+    var countdownNum = document.getElementById('countdown-num');
+    var countdownText = document.getElementById('countdown-text');
+
+    var redirected = false;
+    var interval = null;
+
+    // Basic bot filter: known crawlers / headless UAs should not fire
+    // conversion events or auto-redirect.
+    function isLikelyBot() {
+      var ua = navigator.userAgent || '';
+      return /bot|crawl|spider|headless|facebookexternalhit|preview/i.test(ua);
+    }
+
+    // Fire the Subscribe event at most once per browser session, so a
+    // page refresh or the auto-redirect + manual click firing twice
+    // doesn't inflate the conversion count.
+    function fireSubscribeEvent() {
+      if (isLikelyBot()) return;
+      if (sessionStorage.getItem('fbq_subscribe_fired')) return;
+      if (typeof fbq === 'function') {
+        fbq('track', 'Subscribe');
+      }
+      sessionStorage.setItem('fbq_subscribe_fired', '1');
+    }
+
+    function doRedirect() {
+      if (redirected) return;
+      redirected = true;
+      if (interval) clearInterval(interval);
+      fireSubscribeEvent();
+      window.location.href = TELEGRAM_URL;
+    }
+
+    // Manual click: fire immediately, cancel the countdown, then navigate.
+    if (ctaBtn) {
+      ctaBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        doRedirect();
+      });
+    }
+
+    // Don't auto-redirect bots/crawlers, but still show a static countdown
+    // so the page renders sensibly if scraped for a preview.
+    if (isLikelyBot()) {
+      if (countdownNum) countdownNum.textContent = COUNTDOWN_SECONDS;
+      return;
+    }
+
+    var remaining = COUNTDOWN_SECONDS;
+    if (countdownNum) countdownNum.textContent = remaining;
+
+    interval = setInterval(function () {
+      remaining -= 1;
+      if (countdownNum) countdownNum.textContent = remaining;
+      if (remaining <= 0) {
+        doRedirect();
+      }
+    }, 1000);
+
+    // If the tab is hidden (backgrounded) when the timer hits zero, wait
+    // until it's visible again before navigating, so we don't redirect a
+    // background tab the person isn't looking at.
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden && remaining <= 0 && !redirected) {
+        doRedirect();
+      }
+    });
+  })();
+  </script>
+
+</body>
+</html>
