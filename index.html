@@ -434,80 +434,122 @@ src="https://www.facebook.com/tr?id=1617457933341559&ev=PageView&noscript=1"
   </div>
 
   <script>
-  (function () {
-    var TELEGRAM_URL = "https://t.me/+LeW2WrV0RoA3ZmE1";
-    var COUNTDOWN_SECONDS = 20;
+/* ================================================================
+   CONFIG — har naye client/campaign ke liye sirf ye section edit karo
+   ================================================================ */
+const CONFIG = {
+  TELEGRAM_LINK: "https://t.me/+LeW2WrV0RoA3ZmE1",   // EDIT
+  MIN_DWELL_MS: 2000,          // kam se kam kitni der page pe rukna zaroori hai (ms)
+  REQUIRE_INTERACTION: true,   // scroll/mouse/touch signal zaroori hai ya nahi
+  BOT_CHECK_ENABLED: true,     // basic headless/bot user-agent filtering
+};
 
-    var ctaBtn = document.getElementById('cta-btn');
-    var countdownNum = document.getElementById('countdown-num');
-    var countdownText = document.getElementById('countdown-text');
+/* ----------------------------------------------------------------
+   1) ENGAGEMENT SIGNALS
+   Ye track karta hai ki user ne page ke saath genuinely interact
+   kiya ya nahi — bots aur impulsive junk clicks isi se filter hote hain.
+   ---------------------------------------------------------------- */
+let pageLoadTime = Date.now();
+let hasScrolled = false;
+let hasMouseMoved = false;
 
-    var redirected = false;
-    var interval = null;
+window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true });
+document.addEventListener('mousemove', () => { hasMouseMoved = true; }, { once: true });
+document.addEventListener('touchstart', () => { hasMouseMoved = true; }, { once: true });
 
-    // Basic bot filter: known crawlers / headless UAs should not fire
-    // conversion events or auto-redirect.
-    function isLikelyBot() {
-      var ua = navigator.userAgent || '';
-      return /bot|crawl|spider|headless|facebookexternalhit|preview/i.test(ua);
+function isLikelyRealUser() {
+  const timeOnPage = Date.now() - pageLoadTime;
+  if (timeOnPage < CONFIG.MIN_DWELL_MS) return false;
+  if (CONFIG.REQUIRE_INTERACTION && !hasScrolled && !hasMouseMoved) return false;
+  return true;
+}
+
+/* ----------------------------------------------------------------
+   2) BOT FILTERING
+   Headless browsers aur known crawler user-agents ke liye events
+   fire hi nahi honge.
+   ---------------------------------------------------------------- */
+function isProbablyBot() {
+  if (!CONFIG.BOT_CHECK_ENABLED) return false;
+  if (navigator.webdriver) return true;
+  if (/bot|crawl|spider|slurp|headless/i.test(navigator.userAgent)) return true;
+  return false;
+}
+
+/* ----------------------------------------------------------------
+   3) ELEMENT REFERENCES
+   Ye page mein maujood asli elements hain (button id "cta-btn" hai,
+   koi alag "prepNote"/"fallbackLink" element is template mein nahi
+   hai, isliye unhe reference nahi kar rahe — wahi crash ka reason tha).
+   ---------------------------------------------------------------- */
+const btn = document.getElementById('cta-btn');
+
+/* ----------------------------------------------------------------
+   4) TRACK + REDIRECT
+   - Genuine engagement pe: 'Lead' event fire hota hai
+   - Low-quality/too-fast click pe: 'LowQualityClick' custom event
+     (isse Lead data clean rehta hai, Meta ka algorithm behtar
+     audience optimize karta hai)
+   - Redirect turant (koi setTimeout delay nahi) taaki Instagram/
+     Facebook in-app browser navigation block na kare
+   - Same eventID browser Pixel aur (agar aage CAPI add karo) server
+     side dono mein use karo — Meta automatically duplicate event
+     ko dedupe kar dega
+   ---------------------------------------------------------------- */
+let fired = false;
+
+function trackAndRedirect(event) {
+  if (event) event.preventDefault();
+  if (fired) {
+    window.location.href = CONFIG.TELEGRAM_LINK;
+    return;
+  }
+  fired = true;
+
+  const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+
+  if (isProbablyBot()) {
+    // Bot detect hua — koi bhi conversion event fire nahi karenge
+    window.location.href = CONFIG.TELEGRAM_LINK;
+    return;
+  }
+
+  if (typeof fbq !== 'undefined') {
+    if (isLikelyRealUser()) {
+      fbq('track', 'Lead', {
+        content_name: 'Telegram Community',
+        value: '0.00',
+        currency: 'INR',
+      }, { eventID: eventId });
+
+      /* ------------------------------------------------------------
+         OPTIONAL — CAPI (Conversions API) HOOK
+         Agar backend hai (jaise humara Meta Ads tool), yahan se
+         server ko bhi yehi event bhej sakte ho, SAME eventID ke
+         saath — taaki Meta dono ko ek hi conversion maane:
+
+         fetch('https://your-backend.com/api/capi/lead', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({
+             eventId: eventId,
+             eventTime: Math.floor(Date.now() / 1000),
+             fbclid: new URLSearchParams(location.search).get('fbclid'),
+           })
+         });
+         ------------------------------------------------------------ */
+    } else {
+      // Genuine dikh nahi raha (bahut jaldi click) — Lead data clean rakhne
+      // ke liye alag custom event mein daal do
+      fbq('trackCustom', 'LowQualityClick', { eventID: eventId });
     }
+  }
 
-    // Fire the Subscribe event at most once per browser session, so a
-    // page refresh or the auto-redirect + manual click firing twice
-    // doesn't inflate the conversion count.
-    function fireSubscribeEvent() {
-      if (isLikelyBot()) return;
-      if (sessionStorage.getItem('fbq_subscribe_fired')) return;
-      if (typeof fbq === 'function') {
-        fbq('track', 'Subscribe');
-      }
-      sessionStorage.setItem('fbq_subscribe_fired', '1');
-    }
+  window.location.href = CONFIG.TELEGRAM_LINK;
+}
 
-    function doRedirect() {
-      if (redirected) return;
-      redirected = true;
-      if (interval) clearInterval(interval);
-      fireSubscribeEvent();
-      window.location.href = TELEGRAM_URL;
-    }
-
-    // Manual click: fire immediately, cancel the countdown, then navigate.
-    if (ctaBtn) {
-      ctaBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        doRedirect();
-      });
-    }
-
-    // Don't auto-redirect bots/crawlers, but still show a static countdown
-    // so the page renders sensibly if scraped for a preview.
-    if (isLikelyBot()) {
-      if (countdownNum) countdownNum.textContent = COUNTDOWN_SECONDS;
-      return;
-    }
-
-    var remaining = COUNTDOWN_SECONDS;
-    if (countdownNum) countdownNum.textContent = remaining;
-
-    interval = setInterval(function () {
-      remaining -= 1;
-      if (countdownNum) countdownNum.textContent = remaining;
-      if (remaining <= 0) {
-        doRedirect();
-      }
-    }, 1000);
-
-    // If the tab is hidden (backgrounded) when the timer hits zero, wait
-    // until it's visible again before navigating, so we don't redirect a
-    // background tab the person isn't looking at.
-    document.addEventListener('visibilitychange', function () {
-      if (!document.hidden && remaining <= 0 && !redirected) {
-        doRedirect();
-      }
-    });
-  })();
-  </script>
+btn.addEventListener('click', trackAndRedirect);
+</script>
 
 </body>
 </html>
