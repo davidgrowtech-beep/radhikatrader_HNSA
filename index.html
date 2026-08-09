@@ -286,7 +286,7 @@ function trackAndRedirect(event) {
   }
   fired = true;
 
-  const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+  const eventId = 'Subscribe_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 
   if (isProbablyBot()) {
     window.location.href = CONFIG.TELEGRAM_LINK;
@@ -295,7 +295,7 @@ function trackAndRedirect(event) {
 
   if (typeof fbq !== 'undefined') {
     if (isLikelyRealUser()) {
-      fbq('track', 'Lead', {
+      fbq('track', 'Subscribe', {
         content_name: 'Telegram Community',
         value: '0.00',
         currency: 'INR',
