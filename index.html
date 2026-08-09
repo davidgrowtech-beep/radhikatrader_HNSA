@@ -1,264 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Telugu Trader Radhika™</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { min-height: 100%; width: 100%; overflow-x: hidden; overflow-y: auto; font-family: 'DM Sans', sans-serif; background: #03060f; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- ============ EDIT: Page title ============ -->
+<title>Join Free Learning Community — Radhika</title>
 
-    .bg {
-      position: fixed; inset: 0; z-index: 0;
-      background: #03060f;
-    }
-    .bg::before {
-      content: ''; position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse at 90% 10%, rgba(0,210,100,0.07) 0%, transparent 50%),
-        radial-gradient(ellipse at 10% 80%, rgba(0,180,80,0.05) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(255,200,50,0.03) 0%, transparent 60%);
-    }
-    /* Fine grid */
-    .bg::after {
-      content: ''; position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,210,100,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,210,100,0.03) 1px, transparent 1px);
-      background-size: 32px 32px;
-    }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-    /* Scan line */
-    .scanline {
-      position: fixed; left: 0; width: 100%; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,210,100,0.12), transparent);
-      z-index: 2; pointer-events: none;
-      animation: scan 8s linear infinite;
-    }
-    @keyframes scan { 0%{top:-2%} 100%{top:102%} }
+<style>
+:root{
+  --primary:#22c98a;
+  --primary-deep:#0e8f60;
+  --accent:#f2c14e;
+  --ink:#f4f7f4;
+  --ink-soft:#adb8ae;
+  --bg:#04070a;
+  --card:rgba(13,20,17,.76);
+  --border:rgba(34,201,138,.30);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  min-height:100vh;min-height:100dvh;display:flex;justify-content:center;align-items:center;
+  padding:24px 16px;color:var(--ink);font-family:'Noto Sans Telugu','Space Grotesk',system-ui,sans-serif;
+  background:var(--bg);overflow-x:hidden;position:relative;
+}
+.aurora{position:fixed;inset:0;z-index:-2;background:var(--bg);}
+.aurora span{position:absolute;border-radius:50%;filter:blur(90px);opacity:.30;animation:drift 16s ease-in-out infinite alternate;}
+.aurora .a1{width:320px;height:320px;background:var(--primary);top:-100px;left:-80px;}
+.aurora .a2{width:280px;height:280px;background:var(--accent);bottom:-110px;right:-90px;animation-delay:-6s;}
+@keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(25px,-30px) scale(1.1);}}
 
-    .wrapper {
-      position: relative; z-index: 10;
-      min-height: 100vh; width: 100%;
-      display: flex; flex-direction: column;
-    }
+.wrapper{width:100%;max-width:440px;position:relative;z-index:1;}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:24px;
+  padding:clamp(20px,5vw,28px);
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:0 40px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+  text-align:center;position:relative;overflow:hidden;
+}
+.card::before{
+  content:"";position:absolute;top:-2px;left:-2px;right:-2px;height:3px;
+  background:linear-gradient(90deg,transparent,var(--primary),var(--accent),transparent);opacity:.85;
+}
 
-    /* ── TOP TICKER ── */
-    .ticker {
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(0,210,100,0.2);
-      overflow: hidden; white-space: nowrap; flex-shrink: 0;
-    }
-    .ticker-inner { display: inline-block; animation: tick 22s linear infinite; }
-    @keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.verify{color:var(--primary);font-size:11.5px;font-weight:700;letter-spacing:.06em;
+  display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:16px;}
+.verify i{color:var(--accent);}
 
-    /* ── HERO — NEW LAYOUT: centered name, chart below ── */
-    .hero {
-      flex: 1;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 28px 20px 20px;
-      position: relative; overflow: hidden;
-      text-align: center;
-      min-height: 0;
-    }
+/* ---- SHORT VIDEO / REEL ---- */
+.reel-frame{
+  position:relative;width:100%;max-width:230px;aspect-ratio:9/16;margin:0 auto 18px;
+  border-radius:20px;overflow:hidden;background:#000;
+  border:2px solid var(--border);
+  box-shadow:0 20px 45px rgba(0,0,0,.5);
+}
+.reel-frame video{width:100%;height:100%;object-fit:cover;display:block;}
+.reel-badge-live{
+  position:absolute;top:10px;left:10px;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);
+  color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;
+  display:flex;align-items:center;gap:5px;letter-spacing:.04em;
+}
+.reel-badge-live .dot{width:6px;height:6px;border-radius:50%;background:#ff4d4d;animation:blink 1s infinite;}
+@keyframes blink{50%{opacity:.3;}}
+.reel-mute{
+  position:absolute;bottom:10px;right:10px;width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;cursor:pointer;
+}
+.reel-gradient{
+  position:absolute;bottom:0;left:0;right:0;height:40%;
+  background:linear-gradient(to top, rgba(0,0,0,.65), transparent);
+  pointer-events:none;
+}
 
-    /* Vertical lines deco */
-    .v-lines {
-      position: absolute; inset: 0; pointer-events: none;
-      display: flex; justify-content: space-between;
-    }
-    .v-line {
-      width: 1px;
-      background: linear-gradient(180deg, transparent, rgba(0,210,100,0.06), transparent);
-    }
+/* ============ EDIT: Headline ============ */
+h3{
+  font-size:clamp(20px,5.4vw,25px);font-weight:800;font-family:'Noto Sans Telugu',sans-serif;
+  background:linear-gradient(135deg,#fff,var(--primary) 55%,var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin-bottom:14px;line-height:1.4;
+}
 
-    /* ₹ symbol big ghost */
-    .rupee-ghost {
-      position: absolute;
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 700;
-      font-size: 65vw;
-      color: rgba(0,210,100,0.025);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -52%);
-      pointer-events: none; user-select: none; z-index: 0; line-height: 1;
-    }
+.description{margin-bottom:20px;line-height:1.75;font-size:14.5px;color:var(--ink-soft);}
 
-    /* Status pill */
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(0,210,100,0.06);
-      border: 1px solid rgba(0,210,100,0.18);
-      border-radius: 99px; padding: 5px 14px;
-      margin-bottom: 20px;
-      position: relative; z-index: 1;
-    }
-    .status-text { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(0,210,100,0.65); }
+/* ---- STATS ---- */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  background:rgba(34,201,138,.06);border:1px solid var(--border);border-radius:16px;
+  padding:14px 8px;margin-bottom:20px;
+}
+.stats-item{font-size:11px;font-weight:600;line-height:1.35;color:var(--ink-soft);}
+.stats-item i{font-size:17px;margin-bottom:5px;display:block;color:var(--primary);}
+.stats-item .line1{display:block;font-weight:800;color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:12.5px;}
 
-    /* Name */
-    .name-radhika {
-      font-family: 'Cormorant Garamond', serif;
-      font-weight: 700;
-      font-size: clamp(3rem, 15vw, 6.5rem);
-      color: #ff0000;
-      line-height: 0.88;
-      letter-spacing: -0.01em;
-      position: relative; z-index: 1;
-    }
-    .name-telugu-trader {
-      font-family: 'DM Mono', monospace;
-      font-size: clamp(0.65rem, 2.8vw, 1rem);
-      color: rgba(0,210,100,0.55);
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      margin-top: 6px;
-      position: relative; z-index: 1;
-    }
-    .tm { font-size: 0.55em; vertical-align: super; color: rgba(0,210,100,0.4); }
+/* ---- CTA button + loading/qualifying state ---- */
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:17px;
+  border-radius:16px;text-decoration:none;color:#04140c;font-size:15px;font-weight:800;
+  font-family:'Space Grotesk',sans-serif;
+  background:linear-gradient(135deg,#7ef2c4,var(--primary) 45%,var(--primary-deep));
+  box-shadow:0 14px 34px rgba(34,201,138,.35), inset 0 1px 0 rgba(255,255,255,.4);
+  position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.2);
+  transition:transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+  cursor:pointer;
+}
+.btn:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(34,201,138,.5);}
+.btn.is-loading{opacity:.55;pointer-events:none;cursor:default;}
+.btn.is-loading .btn-label{opacity:0;}
+.btn-spinner{
+  display:none;position:absolute;width:20px;height:20px;border-radius:50%;
+  border:2.5px solid rgba(0,0,0,.25);border-top-color:#04140c;animation:spin .7s linear infinite;
+}
+.btn.is-loading .btn-spinner{display:block;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-    /* Green separator */
-    .sep {
-      width: 40px; height: 2px;
-      background: linear-gradient(90deg, rgba(0,210,100,0.2), #00d264, rgba(0,210,100,0.2));
-      border-radius: 99px; margin: 18px auto;
-      position: relative; z-index: 1;
-    }
+.prep-note{margin-top:10px;font-size:12px;color:var(--ink-soft);min-height:16px;}
 
-    /* Live chart SVG */
-    .chart-wrap {
-      width: 100%; max-width: 320px;
-      position: relative; z-index: 1; margin: 0 auto;
-    }
-    .chart-path {
-      stroke-dasharray: 400;
-      stroke-dashoffset: 400;
-      animation: draw 2s ease forwards 0.3s;
-    }
-    @keyframes draw { to { stroke-dashoffset: 0; } }
+.fallback-link{display:none;margin-top:12px;font-size:12.5px;color:var(--accent);text-decoration:underline;}
+.fallback-link.show{display:inline-block;}
 
-    /* Subtext */
-    .subtext {
-      font-size: 0.76rem;
-      color: rgba(255,255,255,0.3);
-      font-weight: 300; line-height: 1.65;
-      max-width: 270px; margin: 0 auto;
-      position: relative; z-index: 1;
-    }
+.benefits{margin-top:22px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:6px 16px;text-align:left;}
+.benefits div{padding:11px 0;color:var(--ink-soft);font-size:13px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(255,255,255,.05);}
+.benefits div:last-child{border-bottom:none;}
+.benefits i{font-size:15px;width:18px;text-align:center;color:var(--primary);}
 
-    /* Market tags */
-    .mkt-row {
-      display: flex; gap: 6px; flex-wrap: wrap;
-      justify-content: center; margin-top: 14px;
-      position: relative; z-index: 1;
-    }
-    .mkt-tag {
-      background: rgba(0,210,100,0.06);
-      border: 1px solid rgba(0,210,100,0.18);
-      color: rgba(0,230,110,0.75);
-      font-family: 'DM Mono', monospace;
-      font-size: 10px; padding: 4px 10px;
-      border-radius: 6px; white-space: nowrap;
-      letter-spacing: 0.04em;
-    }
+.disclaimer-wrap{margin-top:22px;text-align:center;}
+.credit{padding-top:12px;border-top:1px solid rgba(255,255,255,.08);}
+.credit p{font-weight:700;margin-bottom:8px;font-size:10.5px;color:var(--ink-soft);letter-spacing:.03em;}
+.credit a{display:inline-block;background:#229ED9;color:#fff;padding:7px 16px;border-radius:8px;
+  text-decoration:none;font-weight:600;font-size:12px;font-family:'Space Grotesk',sans-serif;}
+.disclaimer{margin-top:18px;font-size:10.5px;line-height:1.8;color:#7d8a80;padding:0 6px;}
+</style>
 
-    /* Price ticker mini */
-    .price-row {
-      display: flex; gap: 8px; justify-content: center;
-      flex-wrap: wrap; margin-top: 14px;
-      position: relative; z-index: 1;
-    }
-    .price-chip {
-      display: flex; align-items: center; gap: 5px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(0,210,100,0.12);
-      border-radius: 8px; padding: 5px 10px;
-    }
-    .price-name { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); }
-    .price-val { font-family: 'DM Mono', monospace; font-size: 10px; color: #00e676; }
-    .price-up { color: #00e676; font-size: 9px; }
-    .price-dn { color: #ff4444; font-size: 9px; }
-
-    /* BOTTOM */
-    .bottom { padding: 14px 18px 22px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
-
-    .cta {
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; min-height: 50px;
-      background: linear-gradient(135deg, #008a40, #00c853);
-      color: #001a08;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 700; font-size: clamp(0.85rem, 4vw, 1rem);
-      letter-spacing: 0.06em;
-      border-radius: 12px; text-decoration: none;
-      position: relative; overflow: hidden;
-      box-shadow: 0 4px 28px rgba(0,200,83,0.3);
-      transition: transform .18s, box-shadow .18s;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .cta svg { flex-shrink: 0; width: 18px; height: 18px; }
-    .cta::after {
-      content: '';
-      position: absolute; top:0; left:-100%; width:50%; height:100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transform: skewX(-18deg);
-      animation: shine 3s ease-in-out infinite;
-    }
-    @keyframes shine { 0%,65%{left:-100%} 100%{left:160%} }
-    .cta:active { transform: scale(0.97); }
-
-    .meta { display: flex; align-items: center; justify-content: space-between; }
-
-    @keyframes ping { 75%,100%{transform:scale(2.2);opacity:0} }
-    .ping { animation: ping 1.3s cubic-bezier(0,0,.2,1) infinite; }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 20px 16px 4px;
-      gap: 8px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .brand-logo {
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid #ffffff;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
-      display: block;
-      margin: 0 auto;
-    }
-
-    .verify {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.04em;
-      color: #00e676;
-    }
-
-    .verify svg { width: 13px; height: 13px; flex-shrink: 0; }
-
-    .container h2 {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.55);
-      max-width: 280px;
-      line-height: 1.4;
-    }
-  </style>
-
-<!-- Meta Pixel Code -->
+<!-- ============================================================
+     META PIXEL — EDIT: apna Pixel ID daalo neeche (2 jagah)
+     ============================================================ -->
 <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -268,186 +149,87 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '1668727190853655');
+fbq('init', '1668727190853655'); /* <-- EDIT */
 fbq('track', 'PageView');
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=1668727190853655&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1668727190853655&ev=PageView&noscript=1"/></noscript>
 </head>
 <body>
 
-  <div class="bg"></div>
-  <div class="scanline"></div>
+<div class="aurora"><span class="a1"></span><span class="a2"></span></div>
 
-  <div class="wrapper">
+<div class="wrapper">
+  <div class="card">
+    <div class="verify"><i class="fas fa-check-circle"></i> వెరిఫైడ్ లర్నింగ్ కమ్యూనిటీ</div>
 
-    <!-- TICKER -->
-    <div class="ticker py-1.5">
-      <div class="ticker-inner" style="font-size:11px;font-weight:600;letter-spacing:0.15em;color:rgba(0,210,100,0.7);">
-        <span style="padding:0 16px;">📈 తెలుగు ట్రేడర్ రాధిక™ •</span>
-        <span style="padding:0 16px;">NIFTY CALLS •</span>
-        <span style="padding:0 16px;">OPTIONS TIPS •</span>
-        <span style="padding:0 16px;">BANKNIFTY •</span>
-        <span style="padding:0 16px;">FREE CHANNEL •</span>
-        <span style="padding:0 16px;">TELUGU COMMUNITY •</span>
-        <span style="padding:0 16px;">DAILY ALERTS •</span>
-        <span style="padding:0 16px;">📈 TELUGU TRADER RADHIKA™ •</span>
-        <span style="padding:0 16px;">NIFTY CALLS •</span>
-        <span style="padding:0 16px;">OPTIONS TIPS •</span>
-        <span style="padding:0 16px;">BANKNIFTY •</span>
-        <span style="padding:0 16px;">FREE CHANNEL •</span>
-        <span style="padding:0 16px;">TELUGU COMMUNITY •</span>
-        <span style="padding:0 16px;">DAILY ALERTS •</span>
-      </div>
+    <!-- ============ EDIT: Short video/reel — apna video file/URL daalo ============ -->
+    <div class="reel-frame">
+      <div class="reel-badge-live"><span class="dot"></span> LIVE PREVIEW</div>
+      <video id="reelVideo" autoplay muted loop playsinline poster="rr2.jpg">
+        <source src="radhika-demo.mp4" type="video/mp4">
+      </video>
+      <div class="reel-gradient"></div>
+      <div class="reel-mute" id="reelMuteBtn"><i class="fas fa-volume-mute" id="reelMuteIcon"></i></div>
     </div>
 
-    <div class="container">
-        <img src="rt.jpg" alt="Brand Logo" class="brand-logo" width="120" height="120" onerror="this.style.display='none'">
-        <div class="verify">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1.6 14.6-4-4 1.4-1.4 2.6 2.6 5.6-5.6 1.4 1.4-7 7z"/></svg>
-          Verified Learning Community
-        </div>
-        <h2>*Learn in Structured Way, Not at Guess work</h2>
+    <!-- ============ EDIT: Headline & description ============ -->
+    <h3>రాధిక తో నేర్చుకోండి</h3>
+    <p class="description">📊 నిపుణుల నుండి ప్రపంచ స్థాయి, నిరూపితమైన మరియు వ్యూహాత్మక నైపుణ్యాలను నేర్చుకోండి — ఇక్కడ ఊహాగానాలకు చోటు లేదు.</p>
+
+    <div class="stats">
+      <div class="stats-item"><i class="fas fa-star"></i><span class="line1">10,000+</span>మెంబర్స్</div>
+      <div class="stats-item"><i class="fas fa-chart-line"></i><span class="line1">Daily</span>మార్కెట్ అప్‌డేట్స్</div>
+      <div class="stats-item"><i class="fas fa-shield-halved"></i><span class="line1">Trusted</span>వ్యూహాత్మక పద్ధతి</div>
     </div>
 
-    <!-- HERO -->
-    <div class="hero">
+    <button class="btn" id="telegramBtn" disabled>
+      <span class="btn-label"><i class="fab fa-telegram" style="font-size:18px;"></i> JOIN FREE LEARNING COMMUNITY <i class="fas fa-arrow-right"></i></span>
+      <span class="btn-spinner"></span>
+    </button>
+    <div class="prep-note" id="prepNote">మీ యాక్సెస్ సిద్ధమవుతోంది…</div>
+    <a href="#" class="fallback-link" id="fallbackLink">రీడైరెక్ట్ కాలేదా? ఇక్కడ నొక్కండి</a>
 
-      <!-- Deco -->
-      <div class="v-lines">
-        <div class="v-line"></div><div class="v-line"></div>
-        <div class="v-line"></div><div class="v-line"></div>
-        <div class="v-line"></div>
-      </div>
-      <div class="rupee-ghost">₹</div>
-
-      <!-- Status -->
-      <div class="status-pill">
-        <span style="width:6px;height:6px;border-radius:50%;background:#00d264;display:inline-block;flex-shrink:0;box-shadow:0 0 8px rgba(0,210,100,0.8);"></span>
-        <span class="status-text">Telegram Channel · Free</span>
-      </div>
-
-      <!-- Name -->
-      <div style="position:relative;z-index:1;">
-        <div class="name-radhika">Radhika</div>
-        <div class="name-telugu-trader">Telugu Trader<span class="tm">™</span></div>
-      </div>
-
-      <!-- Sep -->
-      <div class="sep"></div>
-
-      <!-- Live chart -->
-      <div class="chart-wrap">
-        <svg viewBox="0 0 320 60" preserveAspectRatio="none" style="width:100%;height:52px;">
-          <defs>
-            <linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color:#00c853;stop-opacity:0.3"/>
-              <stop offset="100%" style="stop-color:#00e676;stop-opacity:1"/>
-            </linearGradient>
-            <linearGradient id="fill" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" style="stop-color:#00c853;stop-opacity:0.12"/>
-              <stop offset="100%" style="stop-color:#00c853;stop-opacity:0"/>
-            </linearGradient>
-          </defs>
-          <path d="M0,48 L20,42 L45,38 L70,32 L95,28 L120,22 L145,18 L170,14 L200,10 L230,8 L260,5 L290,3 L320,1 L320,60 L0,60 Z"
-                fill="url(#fill)"/>
-          <polyline class="chart-path"
-            points="0,48 20,42 45,38 70,32 95,28 120,22 145,18 170,14 200,10 230,8 260,5 290,3 320,1"
-            fill="none" stroke="url(#cg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-
-      <!-- Subtext -->
-      <p class="subtext" style="margin-top:12px;">
-        Expert stock &amp; తెలుగు సమాజం కోసం ఆప్షన్స్ కాల్స్ — నిఫ్టీ (NIFTY), బ్యాంక్ నిఫ్టీ (BANKNIFTY) &amp; intraday tips, daily on Telegram.
-      </p>
-
-      <!-- Price chips -->
-      <div class="price-row">
-        <div class="price-chip">
-          <span class="price-name">NIFTY</span>
-          <span class="price-val">23,842</span>
-          <span class="price-up">▲</span>
-        </div>
-        <div class="price-chip">
-          <span class="price-name">BANKNIFTY</span>
-          <span class="price-val">51,204</span>
-          <span class="price-up">▲</span>
-        </div>
-        <div class="price-chip">
-          <span class="price-name">SENSEX</span>
-          <span class="price-val">78,502</span>
-          <span class="price-dn">▼</span>
-        </div>
-      </div>
-
-      <!-- Market tags -->
-      <div class="mkt-row">
-        <span class="mkt-tag">📈 Intraday</span>
-        <span class="mkt-tag">🎯 Options</span>
-        <span class="mkt-tag">💹 Swing</span>
-        <span class="mkt-tag">⚡ Alerts</span>
-        <span class="mkt-tag">🇮🇳 Telugu</span>
-      </div>
-  <!-- BOTTOM -->
-    <div class="bottom">
-      <a href="https://t.me/+LeW2WrV0RoA3ZmE1" target="_blank" class="cta" id="cta-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
-        </svg>
-        <span id="cta-label">JOIN FREE LEARNING COMMUNITY</span>
-      </a>
-
-      <p id="countdown-text" style="text-align:center;font-family:'DM Mono',monospace;font-size:10.5px;color:rgba(0,230,110,0.55);letter-spacing:0.04em;">
-        Auto-redirecting to Telegram in <span id="countdown-num">20</span>s
-      </p>
-
-      <div class="meta">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span style="position:relative;display:inline-flex;width:8px;height:8px;">
-            <span class="ping" style="position:absolute;inset:0;border-radius:50%;background:#00d264;opacity:0.75;display:inline-flex;width:100%;height:100%;"></span>
-            <span style="position:relative;width:8px;height:8px;border-radius:50%;background:#00d264;display:inline-flex;flex-shrink:0;"></span>
-          </span>
-          <span style="font-size:10px;color:rgba(255,255,255,0.25);">మార్కెట్ ప్రత్యక్షం · క్రియాశీల సభ్యులు</span>
-        </div>
-        <p style="font-size:10px;color:rgba(255,255,255,0.15);">స్వేచ్ఛగా · బాధ్యతాయుతంగా వ్యాపారం చేయండి</p>
-      </div>
+    <div class="benefits">
+      <div><i class="fas fa-chart-line"></i> <span>రోజువారీ మార్కెట్ అప్‌డేట్స్</span></div>
+      <div><i class="fas fa-book-open"></i> <span>ఉచిత లెర్నింగ్ కంటెంట్</span></div>
+      <div><i class="fas fa-bullseye"></i> <span>బిగినర్స్ కోసం సులభమైన వివరణ</span></div>
+      <div><i class="fas fa-users"></i> <span>24 X 7 కమ్యూనిటీ సపోర్ట్</span></div>
     </div>
-    </div>
-            <div class="disclaimer"><div style="text-align:center; margin:14px 0 10px 0; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08);">
-        <p style="font-weight:bold; margin-bottom:6px; font-size:11px; color:#94a3b8;">Advertised by : SRS Marketing Agency</p>
-        <a href="https://t.me/srsagency" target="_blank" style="
-      display:inline-block;
-      background-color:#F00000;
-      color:#FFFF00;
-      padding:6px 14px;
-      border-radius:6px;
-      text-decoration:none;
-      font-weight:600;
-      font-size:12px;
-      font-family:sans-serif;">
-    📩 * Visit @ SRS Marketing
-  </a>
   </div>
 
-  <script>
+  <div class="disclaimer-wrap">
+    <div class="credit">
+      <p>Advertised by : SRS Marketing Agency</p>
+      <a href="https://t.me/srsagency" target="_blank">📩 Visit @ SRS Marketing</a>
+    </div>
+    <!-- ============ EDIT: Disclaimer (niche-specific) ============ -->
+    <div class="disclaimer"><strong>నిరాకరణ:</strong> ఈ ప్లాట్‌ఫారమ్ కేవలం విద్యా మరియు సమాచార ప్రయోజనాల కోసం మాత్రమే. మేము ఎలాంటి పెట్టుబడి, ట్రేడింగ్ లేదా ఆర్థిక సలహా అందించము. దయచేసి ఏదైనా నిర్ణయం తీసుకునే ముందు మీ స్వంత పరిశోధన చేయండి.</div>
+  </div>
+</div>
+
+<script>
 /* ================================================================
    CONFIG — har naye client/campaign ke liye sirf ye section edit karo
    ================================================================ */
 const CONFIG = {
   TELEGRAM_LINK: "https://t.me/+LeW2WrV0RoA3ZmE1",   // EDIT
-  MIN_DWELL_MS: 2000,          // kam se kam kitni der page pe rukna zaroori hai (ms)
-  REQUIRE_INTERACTION: true,   // scroll/mouse/touch signal zaroori hai ya nahi
-  BOT_CHECK_ENABLED: true,     // basic headless/bot user-agent filtering
+  MIN_DWELL_MS: 2000,
+  REQUIRE_INTERACTION: true,
+  PREP_DELAY_MS: 1500,
+  BOT_CHECK_ENABLED: true,
 };
+
+/* ---- Reel mute/unmute toggle (decorative, video engagement UX) ---- */
+const reelVideo = document.getElementById('reelVideo');
+const reelMuteBtn = document.getElementById('reelMuteBtn');
+const reelMuteIcon = document.getElementById('reelMuteIcon');
+reelMuteBtn.addEventListener('click', () => {
+  reelVideo.muted = !reelVideo.muted;
+  reelMuteIcon.className = reelVideo.muted ? 'fas fa-volume-mute' : 'fas fa-volume-high';
+});
 
 /* ----------------------------------------------------------------
    1) ENGAGEMENT SIGNALS
-   Ye track karta hai ki user ne page ke saath genuinely interact
-   kiya ya nahi — bots aur impulsive junk clicks isi se filter hote hain.
    ---------------------------------------------------------------- */
 let pageLoadTime = Date.now();
 let hasScrolled = false;
@@ -466,8 +248,6 @@ function isLikelyRealUser() {
 
 /* ----------------------------------------------------------------
    2) BOT FILTERING
-   Headless browsers aur known crawler user-agents ke liye events
-   fire hi nahi honge.
    ---------------------------------------------------------------- */
 function isProbablyBot() {
   if (!CONFIG.BOT_CHECK_ENABLED) return false;
@@ -477,24 +257,24 @@ function isProbablyBot() {
 }
 
 /* ----------------------------------------------------------------
-   3) ELEMENT REFERENCES
-   Ye page mein maujood asli elements hain (button id "cta-btn" hai,
-   koi alag "prepNote"/"fallbackLink" element is template mein nahi
-   hai, isliye unhe reference nahi kar rahe — wahi crash ka reason tha).
+   3) "PREPARING ACCESS" GATE
    ---------------------------------------------------------------- */
-const btn = document.getElementById('cta-btn');
+const btn = document.getElementById('telegramBtn');
+const prepNote = document.getElementById('prepNote');
+const fallbackLink = document.getElementById('fallbackLink');
+fallbackLink.href = CONFIG.TELEGRAM_LINK;
+
+btn.classList.add('is-loading');
+
+setTimeout(() => {
+  if (isProbablyBot()) return;
+  btn.disabled = false;
+  btn.classList.remove('is-loading');
+  prepNote.textContent = '';
+}, CONFIG.PREP_DELAY_MS);
 
 /* ----------------------------------------------------------------
    4) TRACK + REDIRECT
-   - Genuine engagement pe: 'Lead' event fire hota hai
-   - Low-quality/too-fast click pe: 'LowQualityClick' custom event
-     (isse Lead data clean rehta hai, Meta ka algorithm behtar
-     audience optimize karta hai)
-   - Redirect turant (koi setTimeout delay nahi) taaki Instagram/
-     Facebook in-app browser navigation block na kare
-   - Same eventID browser Pixel aur (agar aage CAPI add karo) server
-     side dono mein use karo — Meta automatically duplicate event
-     ko dedupe kar dega
    ---------------------------------------------------------------- */
 let fired = false;
 
@@ -509,7 +289,6 @@ function trackAndRedirect(event) {
   const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
 
   if (isProbablyBot()) {
-    // Bot detect hua — koi bhi conversion event fire nahi karenge
     window.location.href = CONFIG.TELEGRAM_LINK;
     return;
   }
@@ -521,31 +300,13 @@ function trackAndRedirect(event) {
         value: '0.00',
         currency: 'INR',
       }, { eventID: eventId });
-
-      /* ------------------------------------------------------------
-         OPTIONAL — CAPI (Conversions API) HOOK
-         Agar backend hai (jaise humara Meta Ads tool), yahan se
-         server ko bhi yehi event bhej sakte ho, SAME eventID ke
-         saath — taaki Meta dono ko ek hi conversion maane:
-
-         fetch('https://your-backend.com/api/capi/lead', {
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({
-             eventId: eventId,
-             eventTime: Math.floor(Date.now() / 1000),
-             fbclid: new URLSearchParams(location.search).get('fbclid'),
-           })
-         });
-         ------------------------------------------------------------ */
     } else {
-      // Genuine dikh nahi raha (bahut jaldi click) — Lead data clean rakhne
-      // ke liye alag custom event mein daal do
       fbq('trackCustom', 'LowQualityClick', { eventID: eventId });
     }
   }
 
   window.location.href = CONFIG.TELEGRAM_LINK;
+  setTimeout(() => { fallbackLink.classList.add('show'); }, 1200);
 }
 
 btn.addEventListener('click', trackAndRedirect);
