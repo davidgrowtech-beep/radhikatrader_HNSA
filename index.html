@@ -207,109 +207,176 @@ fbq('track', 'PageView');
   </div>
 </div>
 
-<script>
-/* ================================================================
-   CONFIG — har naye client/campaign ke liye sirf ye section edit karo
-   ================================================================ */
-const CONFIG = {
-  TELEGRAM_LINK: "https://t.me/+LeW2WrV0RoA3ZmE1",   // EDIT
-  MIN_DWELL_MS: 2000,
-  REQUIRE_INTERACTION: true,
-  PREP_DELAY_MS: 1300,
-  BOT_CHECK_ENABLED: true,
-};
 
-/* ---- Reel mute/unmute toggle (decorative, video engagement UX) ---- */
-const reelVideo = document.getElementById('reelVideo');
-const reelMuteBtn = document.getElementById('reelMuteBtn');
-const reelMuteIcon = document.getElementById('reelMuteIcon');
-reelMuteBtn.addEventListener('click', () => {
-  reelVideo.muted = !reelVideo.muted;
-  reelMuteIcon.className = reelVideo.muted ? 'fas fa-volume-mute' : 'fas fa-volume-high';
-});
+  <script>
+(function () {
+  /* ================================================================
+     CONFIG — sirf ye values edit karo
+     ================================================================ */
+  const CONFIG = {
+    TELEGRAM_LINK: "https://t.me/+LeW2WrV0RoA3ZmE1",   // <-- EDIT: https://t.me/+xxxx format
+    ENABLE_COUNTDOWN: true,
+    COUNTDOWN_SECONDS: 10,
+    MIN_DWELL_MS: 0,
+    REQUIRE_INTERACTION: true,
+    BOT_CHECK_ENABLED: true,
 
-/* ----------------------------------------------------------------
-   1) ENGAGEMENT SIGNALS
-   ---------------------------------------------------------------- */
-let pageLoadTime = Date.now();
-let hasScrolled = false;
-let hasMouseMoved = false;
+    // NAYA in v2: pixel beacon ko complete hone ka time (ms).
+    // 150-300 ke beech safe hai — user ko delay feel nahi hoga,
+    // lekin Meta Pixel ka network request cancel hone se bach jaata hai.
+    PIXEL_FLUSH_DELAY_MS: 200,
+  };
 
-window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true });
-document.addEventListener('mousemove', () => { hasMouseMoved = true; }, { once: true });
-document.addEventListener('touchstart', () => { hasMouseMoved = true; }, { once: true });
+  /* ----------------------------------------------------------------
+     1) ENGAGEMENT SIGNALS — same as v1
+     ---------------------------------------------------------------- */
+  const pageLoadTime = Date.now();
+  let hasScrolled = false;
+  let hasMouseMoved = false;
+  window.addEventListener('scroll', () => { hasScrolled = true; }, { once: true });
+  document.addEventListener('mousemove', () => { hasMouseMoved = true; }, { once: true });
+  document.addEventListener('touchstart', () => { hasMouseMoved = true; }, { once: true });
 
-function isLikelyRealUser() {
-  const timeOnPage = Date.now() - pageLoadTime;
-  if (timeOnPage < CONFIG.MIN_DWELL_MS) return false;
-  if (CONFIG.REQUIRE_INTERACTION && !hasScrolled && !hasMouseMoved) return false;
-  return true;
-}
-
-/* ----------------------------------------------------------------
-   2) BOT FILTERING
-   ---------------------------------------------------------------- */
-function isProbablyBot() {
-  if (!CONFIG.BOT_CHECK_ENABLED) return false;
-  if (navigator.webdriver) return true;
-  if (/bot|crawl|spider|slurp|headless/i.test(navigator.userAgent)) return true;
-  return false;
-}
-
-/* ----------------------------------------------------------------
-   3) "PREPARING ACCESS" GATE
-   ---------------------------------------------------------------- */
-const btn = document.getElementById('telegramBtn');
-const prepNote = document.getElementById('prepNote');
-const fallbackLink = document.getElementById('fallbackLink');
-fallbackLink.href = CONFIG.TELEGRAM_LINK;
-
-btn.classList.add('is-loading');
-
-setTimeout(() => {
-  if (isProbablyBot()) return;
-  btn.disabled = false;
-  btn.classList.remove('is-loading');
-  prepNote.textContent = '';
-}, CONFIG.PREP_DELAY_MS);
-
-/* ----------------------------------------------------------------
-   4) TRACK + REDIRECT
-   ---------------------------------------------------------------- */
-let fired = false;
-
-function trackAndRedirect(event) {
-  if (event) event.preventDefault();
-  if (fired) {
-    window.location.href = CONFIG.TELEGRAM_LINK;
-    return;
-  }
-  fired = true;
-
-  const eventId = 'Subscribe_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
-
-  if (isProbablyBot()) {
-    window.location.href = CONFIG.TELEGRAM_LINK;
-    return;
+  function isLikelyRealUser() {
+    const timeOnPage = Date.now() - pageLoadTime;
+    if (timeOnPage < CONFIG.MIN_DWELL_MS) return false;
+    if (CONFIG.REQUIRE_INTERACTION && !hasScrolled && !hasMouseMoved) return false;
+    return true;
   }
 
-  if (typeof fbq !== 'undefined') {
-    if (isLikelyRealUser()) {
-      fbq('track', 'Subscribe', {
-        content_name: 'Telegram Community',
-        value: '0.00',
-        currency: 'INR',
-      }, { eventID: eventId });
-    } else {
-      fbq('trackCustom', 'LowQualityClick', { eventID: eventId });
+  function isProbablyBot() {
+    if (!CONFIG.BOT_CHECK_ENABLED) return false;
+    if (navigator.webdriver) return true;
+    if (/bot|crawl|spider|slurp|headless/i.test(navigator.userAgent)) return true;
+    return false;
+  }
+
+  /* ----------------------------------------------------------------
+     2) TRACK + REDIRECT — v2: pixel ko fire hone ka time dete hain
+     redirect se pehle. Fallback link turant visible karte hain taaki
+     agar redirect block ho (in-app browser), user manually tap kar sake.
+     ---------------------------------------------------------------- */
+  let fired = false;
+  let redirected = false;
+
+  function doRedirect() {
+    if (redirected) return;
+    redirected = true;
+    window.location.href = CONFIG.TELEGRAM_LINK;
+  }
+
+  function showFallback() {
+    const fallback = document.getElementById('fallbackLink');
+    if (fallback) {
+      fallback.href = CONFIG.TELEGRAM_LINK;
+      fallback.style.display = ''; // turant visible, koi 1.2s wait nahi
+      fallback.classList.add('show');
     }
   }
 
-  window.location.href = CONFIG.TELEGRAM_LINK;
-  setTimeout(() => { fallbackLink.classList.add('show'); }, 1200);
-}
+  window.trackAndRedirect = function (event) {
+    if (event && typeof event.preventDefault === 'function') {
+      event.preventDefault();
+    }
 
-btn.addEventListener('click', trackAndRedirect);
+    if (fired) {
+      doRedirect();
+      return;
+    }
+    fired = true;
+
+    // Fallback turant ready + visible — safety net agar redirect fail ho
+    showFallback();
+
+    if (isProbablyBot()) {
+      doRedirect();
+      return;
+    }
+
+    const eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    let pixelFired = false;
+
+    if (typeof fbq !== 'undefined') {
+      if (isLikelyRealUser()) {
+        fbq('track', 'Lead', {
+          content_name: 'Telegram Community',
+          button_click: true,
+        }, { eventID: eventId });
+      } else {
+        fbq('trackCustom', 'LowQualityClick', { eventID: eventId });
+      }
+      pixelFired = true;
+    }
+
+    // Safety net: agar page hide/unload ho raha hai jaldi (user ne
+    // app switch kiya ya browser navigate kar diya beforehand),
+    // ye listener ek aakhri chance deta hai. Real fbq calls already
+    // apna transport khud handle karte hain, ye sirf extra insurance hai.
+    if (pixelFired) {
+      const flushSafety = () => { /* no-op safety hook, kept for future CAPI beacon if needed */ };
+      document.addEventListener('visibilitychange', flushSafety, { once: true });
+      window.addEventListener('pagehide', flushSafety, { once: true });
+    }
+
+    // MAIN FIX: turant redirect NAHI, chhota sa flush window dete hain
+    // taaki Pixel ka network request cancel na ho. Itna kam hai (200ms)
+    // ki user ko lagega instant hi hua.
+    setTimeout(doRedirect, pixelFired ? CONFIG.PIXEL_FLUSH_DELAY_MS : 0);
+  };
+
+  /* ----------------------------------------------------------------
+     3) AUTO-WIRE ALL TELEGRAM BUTTONS — same as v1
+     ---------------------------------------------------------------- */
+  document.addEventListener('DOMContentLoaded', wireAllButtons);
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    wireAllButtons();
+  }
+
+  function wireAllButtons() {
+    const selectors = [
+      '[data-telegram-btn]',
+      '.telegram-btn',
+      '#telegramBtn',
+      '#stickyTelegramBtn',
+      '#fallbackLink',
+      '[id^="telegramBtn"]',
+    ];
+    const buttons = document.querySelectorAll(selectors.join(','));
+    buttons.forEach((el) => {
+      el.addEventListener('click', window.trackAndRedirect);
+    });
+
+    setupCountdown();
+  }
+
+  /* ----------------------------------------------------------------
+     4) COUNTDOWN (optional, auto-redirect without click) — same as v1
+     ---------------------------------------------------------------- */
+  function setupCountdown() {
+    if (!CONFIG.ENABLE_COUNTDOWN) return;
+
+    const counter =
+      document.getElementById('countdown') ||
+      document.getElementById('countTxt') ||
+      document.getElementById('count');
+
+    let time = CONFIG.COUNTDOWN_SECONDS;
+    if (counter) counter.textContent = time;
+
+    const timer = setInterval(() => {
+      time--;
+      if (counter) counter.textContent = time;
+
+      if (time <= 0) {
+        clearInterval(timer);
+        if (fired) return;
+
+        showFallback();
+        doRedirect();
+      }
+    }, 1000);
+  }
+})();
 </script>
 
 </body>
